@@ -1,7 +1,7 @@
 from src.config_dc import Config
 from src.generating import generate_dataset
 from src.train import train
-from visualizing import 
+from src.visualizing import plot_history, plot_model_response
 
 
 cfg = Config()

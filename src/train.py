@@ -8,6 +8,7 @@ from src.constants import constant_dict
 from src.models import create_model
 from src.training_backend import train_step, LossTracking
 from src.residual import HH_residual_calculator
+from src.visualizing import plot_history, plot_model_response
 
 
 def train(X_train, y_train, X_val, y_val, cfg, X_test=None, y_test=None):
@@ -115,3 +116,14 @@ def train(X_train, y_train, X_val, y_val, cfg, X_test=None, y_test=None):
         # Callback at the end of epoch
         callbacks.on_epoch_end(epoch, logs={'val_loss': val_IC+val_v_ode+val_m_ode+val_h_ode+val_n_ode+val_data})
         val_loss_hist.append(val_IC+val_v_ode+val_m_ode+val_h_ode+val_n_ode)
+
+    train_ds = tf.data.Dataset.from_tensor_slices((X_test))
+    train_ds = train_ds.batch(col_batch_size)
+    y_pred = PI_DeepONet({"forcing": X_test[:, 1:-1], "time": X_test[:, -1]})
+    print('Mean squared error on test:')
+    print(np.mean(tf.keras.metrics.mean_squared_error(y_test, y_pred)))
+    
+    plot_history(cfg, loss_tracker, val_loss_hist)
+    plot_model_response(cfg, PI_DeepONet)
+
+    return None
