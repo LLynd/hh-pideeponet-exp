@@ -1,0 +1,7 @@
+numpy
+scipy
+matplotlib
+tensorflow
+brian2
+dataclasses_json
+dataclasses
